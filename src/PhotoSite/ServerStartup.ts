@@ -9,6 +9,10 @@ app.get("/",(req,res)=>{
     res.sendfile("./index.html")
 })
 
+app.get("/resource/*",(req,res)=>{
+    console.log(__dirname+"/"+ req.path);
+    res.sendfile(__dirname+"/"+ req.path);
+})
 app.get("/static/*",(req,res)=>{
     res.sendfile(__dirname+"/"+ req.path);
 })

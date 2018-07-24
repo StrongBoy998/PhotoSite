@@ -1,33 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-    <title>FX-Album</title>
-    <script src="https://cdn.bootcss.com/react/16.4.0/umd/react.development.js"></script>
-    <script src="https://cdn.bootcss.com/react-dom/16.4.0/umd/react-dom.development.js"></script>
-    <script src="https://cdn.bootcss.com/babel-standalone/6.26.0/babel.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.min.js"></script>
-</head>
-<body>
-    <div id="container">
-
-    </div>
-
+    <head>
+        <meta charset="UTF-8" />
+        <title>FX-Album</title>
+        <script src="https://cdn.bootcss.com/react/16.4.0/umd/react.development.js"></script>
+        <script src="https://cdn.bootcss.com/react-dom/16.4.0/umd/react-dom.development.js"></script>
+        <script src="https://cdn.bootcss.com/babel-standalone/6.26.0/babel.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="container"></div>
+            </div>
+        </div>
+        <img style="height:100;width:200"/>
     <script type="text/babel">
-        let Album="";
-        $.ajax({url:"/getAlbum",data:{},type:"POST",async:false,
+        function ImgComponent(props){
+            return <img style={{height:100,width:200}} title={props.photo.Path} src={props.photo.Path} key={props.photo.Name} />
+        }
+
+        function FileListComponent(props) {
+            return (
+                    <div>
+                        {props.PhotoList.map(photo=>{
+                           return <ImgComponent photo={photo} />
+                        })}
+                    </div>
+                );
+        }
+        function AblumComponent(props) {
+            const AlbumList = props.AlbumList;
+            return (
+                <div>{AlbumList.map((album) =>{
+                    return (
+                        <div key={album.Name}>
+                            <div>{album.Name}</div>
+                            <FileListComponent PhotoList={album.Photos} />
+                        </div>
+                    )}
+                )}</div>
+            );
+        }
+        $.ajax({url:"/getAlbum",data:{},type:"POST",async:true,
             success:function(data){
-                Album=data;
+                let Album=JSON.parse(data);
+                ReactDOM.render(
+                    <AblumComponent AlbumList={Album} />,
+                    $("div[id=container]")[0]
+                );
             }
         })
-        function Content(){
-            return(
-                <div>{Album}</div>
-            )
-        }
-        ReactDOM.render(
-            <Content /> ,
-            document.getElementById('container')
-        );
-    </script>
+</script>
+
 </body>
 </html>
